@@ -1,0 +1,14 @@
+1. sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --on
+2. mkdir -p /mnt/ccstudio/data
+3. cp -a /var/www/nextcloud/data/. /mnt/ccstudio/data
+4. chown -R www-data:www-data /mnt/ccstudio/data
+5. nano /var/www/nextcloud/config/config.php
+       'datadirectory' => '/mnt/ccstudio/data',
+6. mysqldump -uccstudio -p > /home/zombie/www/html/dump.sql
+7. Adjust "oc_storages"database table to reflect the new data folder location:
+      mysql -uccstudio -p
+      //enter mysql root password, then within mysql console:
+      use nextcloud;
+      update oc_storages set id='local::/mnt/ccstudio/data/' where id='local::mnt/ccstudio/data/'; //take care about backslash at the end of path!!
+      quit;
+8. sudo -u www-data php /var/www/nextcloud/occ maintenance:mode --off
